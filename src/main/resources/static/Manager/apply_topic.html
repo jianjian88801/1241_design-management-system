@@ -1,0 +1,482 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>
+    信件添加
+  </title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <!--导入ElementUI样式列表，css样式一般都在页面头部-->
+  <link rel="stylesheet" href="../css/index.css">
+<!--  <link rel="stylesheet" href="../css/main.css" media="all">-->
+  <!--    <script type="text/javascript" src="lib/loading/okLoading.js"></script>-->
+  <style>
+    .imgs{display: none;}
+  </style>
+  <!--百度编辑器-->
+  <script src="../ueditor/ueditor.config.js"></script>
+  <script src="../ueditor/ueditor.all.min.js"></script>
+  <script src="../ueditor/lang/zh-cn/zh-cn.js"></script>
+</head>
+<body>
+
+<div id="app" class="x-body">
+  <TABLE width="820" border=0 align="center" cellPadding=0
+         cellSpacing=1 bgColor=#b1b3b6>
+    <TBODY>
+    <TR>
+      <TD>
+        <TABLE cellSpacing=5 cellPadding=5 width="100%" bgColor=#eeeeee
+               border=0>
+          <TBODY>
+          <TR>
+            <TD bgColor=#ffffff>
+              <form action="teacher?act=apply_topic_do" method="POST" name="form2" id="form2">
+                <TABLE cellSpacing=0 cellPadding=0 width="100%"
+                       align=center border=0>
+                  <TBODY>
+                  <TR>
+                    <TD>
+                      <TABLE width="100%" border=1 align="center"
+                             cellPadding=1 cellSpacing=1 borderColor=#ffffff
+                             bgColor=#cccccc>
+                        <TBODY>
+                        <TR bgColor=#E8F0FF>
+                          <TD height="30" colSpan=7>
+                            <DIV align=center>
+                              <STRONG style='color:#FF6600;font-size:14px;font-family:"微软雅黑"'>[选题申请表]
+                              </STRONG>
+                            </DIV>
+                          </TD>
+                        <TR  bgColor=#ffffff  style='font-size:14px;height:30px'>
+                          <TD width="100px"  rowspan="5">
+                            <div align="center" class="style1">课题情况</div>
+                          </TD>
+                          <TD width="100px">
+                            <div align="center">
+                              <span class="style1">题目名称</span>
+                            </div>
+                          </TD>
+                          <TD colspan="5">
+                            <el-input v-model="community.title" placeholder="请输入内容"></el-input>
+                          </TD>
+                        </TR>
+                        <TR bgColor=#ffffff  style="height:30px">
+                          <TD >
+                            <div align="center">
+                              <span class="style1">选题类别</span>
+                            </div>
+                          </TD>
+                          <TD colspan="5" style='font-size:14px;font-family:"微软雅黑"'>
+                            <el-radio-group v-model="community.cate">
+                              <el-radio :label='"科学研究"'>科学研究</el-radio>
+                              <el-radio :label='"技术开发"'>技术开发</el-radio>
+                              <el-radio :label='"经济建设"'>经济建设</el-radio>
+                              <el-radio :label='"社会发展"'>社会发展</el-radio>
+                              <el-radio :label='"其他"'>其他</el-radio>
+                            </el-radio-group>
+                          </TD>
+                        </TR>
+                        <TR bgColor=#ffffff style='font-size:14px;font-family:"微软雅黑";height:30px'>
+                          <TD >
+                            <div align="center">
+                              <span >教师姓名</span>
+
+                            </div>
+                          </TD>
+                          <TD colspan="1" width="120px" >
+                            <div align="center" style="" >{{community.teacher.teaName}}</div>
+                          </TD>
+                          <TD>
+                            <div align="center" >
+                              <span >职称</span>
+                            </div>
+                          </TD>
+                          <TD width="120px">
+                            <div align="center" >{{community.teacher.jobTitle}}</div>
+                          </TD>
+                          <TD width="80px" >
+                            <div align="center">
+                              <span>学位</span>
+                            </div>
+                          </TD>
+                          <TD colspan="1"  width="120px">
+                            <div align="center" >{{community.teacher.xueWei}}</div>
+                          </TD>
+                        </TR>
+                        <TR bgColor=#ffffff style='font-size:14px;height:30px'>
+                          <TD >
+                            <div align="center">
+                              <span class="style1">课题来源</span>
+                            </div>
+                          </TD>
+                          <TD colspan="5" style='font-size:14px;font-family:"微软雅黑"'>
+
+                            <el-radio-group v-model="community.source">
+                              <el-radio :label='"科研"'>科研</el-radio>
+                              <el-radio :label='"社会实际"'>社会实际</el-radio>
+                              <el-radio :label='"科学竞赛"'>科学竞赛</el-radio>
+                              <el-radio :label='"创新创业"'>创新创业</el-radio>
+                              <el-radio :label='"其他"'>其他</el-radio>
+                            </el-radio-group>
+                          </TD>
+                        </TR>
+                        <TR bgColor=#ffffff style='font-size:14px;height:30px'>
+                          <TD >
+                            <div align="center">
+                              <span class="style1">成果类别</span>
+                            </div>
+                          </TD>
+                          <TD colspan="5" style='font-size:14px;font-family:"微软雅黑"'>
+
+                            <el-radio-group v-model="community.type">
+                              <el-radio :label='"论文"'>论文</el-radio>
+                              <el-radio :label='"设计"'>设计（含创作、演出）</el-radio>
+                              <el-radio :label='"论文+设计"'>论文+设计</el-radio>
+                            </el-radio-group>
+                          </TD>
+                        </TR>
+                        <TR  bgColor=#ffffff height="500">
+                          <TD width="100px" rowspan="1">
+                            <div align="center" style='font-size:14px;font-family:"微软雅黑"'>主要研究<br/>内容目标</div>
+                          </TD>
+                          <TD colspan="6" style="padding:15px">
+<!--                            <div v-html="content"></div>-->
+                            <div class="layui-input-inline">
+                              <textarea  id="content1" placeholder="" name="content"></textarea>
+                            </div>
+                          </TD>
+                        </TR>
+
+                        <TR  bgColor=#ffffff>
+                          <TD height="30" width="100px" rowspan="1">
+                            <div align="center" style='font-size:14px;font-family:"微软雅黑"'>限选专业</div>
+                          </TD>
+
+                          <TD colspan="10">
+                            <div align="left" style='padding-left:10px;font-size:14px;'>
+                              <el-tag
+                                      size="small"
+                                      v-for="tag in community.topic_majors"
+                                      :key="tag.major.majorName"
+                                      >
+                                {{tag.major.majorName}}
+                              </el-tag>
+                            </div>
+                          </TD>
+
+                        </TR>
+                        <TR bgColor=#ffffff>
+                          <TD  colspan="10" style="text-align:center;height:60px">
+
+                            <table border="0" style="width:340px" align="center">
+                              <tr>
+                                <td><img style='width:30px' src="../images/luqu.png"/></td>
+                                <td><div style='font-size:16px;position: relative;left: -30px' >录取学生:{{community.student.major.majorName}} <b style='color:red'>{{community.student.stuName}}</b></div></td>
+                              </tr>
+                            </table>
+                          </TD>
+                        </TR>
+                        <TR bgColor=#ffffff>
+                          <TD  colspan="10" style="text-align:center;height:60px">
+                            <table border="0" style="width:340px" align="center">
+                              <tr>
+                                <el-button type="success" @click="save()" round>保存</el-button>
+                              </tr>
+                            </table>
+                          </TD>
+                        </TR>
+                        </TBODY>
+                      </TABLE>
+                    </TD>
+                  </TR>
+                  </TBODY>
+                </TABLE>
+              </form>
+            </TD>
+          </TR>
+          </TBODY>
+        </TABLE>
+      </TD>
+    </TR>
+    </TBODY>
+  </TABLE>
+</div>
+<script src="../lib/layui/layui.js" charset="utf-8"></script>
+<!--js脚本一般是放在页面尾部-->
+<!--Vue js脚本-->
+<script src="../js/vue.js" charset="utf-8"></script>
+<!--引入ElementUI组件库-->
+<script src="../js/index.js" charset="utf-8"></script>
+<!--引入Axios js脚本-->
+<script src="../js/axios.js" charset="utf-8"></script>
+<!--引入时间插件包Momentjs-->
+<script src="../js/moment.min.js" charset="utf-8"></script>
+<script src="../lib/layui/layui.js" charset="utf-8"></script>
+<script src="../js/x-layui.js" charset="utf-8"></script>
+<script src="../js/jquery.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+  //实例化编辑器
+  //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+
+  UE.getEditor('content1',{initialFrameWidth:700,initialFrameHeight:440,});
+</script>
+
+<script type="text/javascript">
+  var app = new Vue({
+    el:"#app",
+    data:{
+      title:"添加学生",
+      SessionOptions:{},
+      // community:{id:"",stuDepartId:"",stuName:"",depart:{depId:""}},
+      community:{id:"",
+        teacher:{
+        teaName:"",
+        },
+        student:{
+        major:"",
+        }
+      },
+      fileList:[],
+      DepartOptions:[],
+      MajorOptions:[],
+      ClassOptions:[],
+      content:"",
+      tags: [
+        { name: '标签一', type: '' },
+        { name: '标签二', type: 'success' },
+        { name: '标签三', type: 'info' },
+        { name: '标签四', type: 'warning' },
+        { name: '标签五', type: 'danger' }
+      ],
+      rules: {
+
+        name: [
+          { required: true, message: '请输入名字', trigger: 'blur' }
+        ],
+        depart: [
+          { required: true, message: '请选择系部', trigger: 'blur' }
+        ],
+        gender:[
+          { required: true, message: '请选择性别', trigger: 'change' }
+        ],
+        phoneNumber:[
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ],
+        session:[
+          { required: true, message: '请输入届数', trigger: 'blur' }
+        ],
+        campus:[
+          { required: true, message: '请输入校区', trigger: 'blur' }
+        ],
+      }
+    },
+    methods:{
+      findById(){
+        axios.get("/Manager/findTopicById?id="+this.community.id).then((res)=>{
+          this.community = res.data.data;
+          this.content = this.community.content;
+          // console.log(this.community);
+
+          var ue = UE.getEditor('content1');
+          ue.addListener("ready", function () {
+            // editor准备好之后才可以使用
+            ue.setContent(app.content);
+          });
+        });
+      },
+      handleSuccess(response, file, fileList){
+        this.community.thumbnail=response.data;
+      },
+      handleRemove() {
+        axios.get("/estate/delfile?fileName="+this.community.thumbnail).then((res)=>{
+          app.community.thumbnail="";
+          if(res.data.flag){
+            app.fileList=[];
+            this.$message({
+              message: '图片删除成功',
+              type: 'success'
+            });
+          }
+        });
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      //文件删除提示
+      beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
+      },
+      //表达重置
+      clearAll() {
+        this.$refs.communityFormRef.resetFields();
+        if(this.fileList.length>0) {
+          this.handleRemove();
+        }
+      },
+      save(){
+        var arr = [];
+        arr.push(UE.getEditor('content1').getContent());
+        // alert(arr.join("\n"));
+        this.community.content = UE.getEditor('content1').getContent();
+        console.log(this.community);
+
+        var method = "";
+        if(this.community.topic_id != null){
+          method = "Update";
+        }else{
+          method = "Create"
+        }
+        axios.post("/Manager/"+method+"Topic",this.community).then((res)=>{
+          if(res.data.flag){
+            this.$message({
+              message: res.data.message,
+              type: 'success'
+            });
+          }
+        });
+      },
+      imgUrl(){
+        return "http://localhost/estate"+app.community.thumbnail;
+      },
+      getQueryString(name){
+        let reg = `(^|&)${name}=([^&]*)(&|$)`
+        let r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+      }
+    },
+    created:function(){
+      layui.use(['element','layer','form'], function(){
+        $ = layui.jquery;//jquery
+        lement = layui.element();//面包导航
+        layer = layui.layer;//弹出层
+        form = layui.form();
+        okLoading.close($);
+      });
+      //获取父页面传递参数，小区ID
+      this.community.id = this.getQueryString("id");
+      //根据小区ID获取小区对象，进行数据回显
+      if(this.community.id != null && this.community.id != ''){
+        this.title="修改学生";
+        this.findById();
+      }
+    }
+  });
+</script>
+
+<script>
+  $(function () {
+    var username="xiyuan";
+    //var username="惜缘";
+    $("input[name='uasername']").val(username);
+  })
+</script>
+<script>
+  layui.use(['laydate','element','layer','form'], function(){
+    $ = layui.jquery;//jquery
+    lement = layui.element();//面包导航
+    layer = layui.layer;//弹出层
+    form = layui.form();
+    laydate = layui.laydate;//日期插件
+    okLoading.close($);
+    form.render();
+
+    //图片上传接口
+    /*layui.upload({
+      url: './upload.json' //上传接口
+      ,success: function(res){ //上传成功后的回调
+          console.log(res);
+        $('#LAY_demo_upload').attr('src',res.url);
+      }
+    });*/
+
+
+    //监听提交
+    form.on('submit(add)', function(data){
+
+      var uasername=$("input[name='uasername']").val();
+      var title=$("input[name='title']").val();
+      var content=$("textarea[name='content']").val();
+      var community_id=$('#community_id option:selected') .val();//所属栏目ID
+      if(community_id==""){
+        layer.msg('所属小区不能为空',{icon:5,time:2000});return false;
+      }
+      if(uasername==""){
+        layer.msg('信件来源不能为空',{icon:5,time:2000});return false;
+      }
+      if(title==""){
+        layer.msg('信件标题不能为空',{icon:5,time:2000});return false;
+      }
+      if(content==""){
+        layer.msg('信件内容不能为空',{icon:5,time:2000});return false;
+      }
+      var data=data.field;
+      $.ajax({
+        type:"post",
+        url:"xxx",
+        data:data,
+        dataType:"json",
+        success:function(data){
+          if(data.status==1)
+          {
+            layer.msg(data.info, {icon: 6,time:2000},function () {
+              window.parent.location.reload();
+              var index = parent.layer.getFrameIndex(window.name);
+              parent.layer.close(index);
+            });
+            return false;
+
+          }
+          else{
+            layer.msg(data.info,{icon:5,time:2000});return false;
+          }
+        }
+
+      });
+
+    });
+
+  })
+</script>
+<!--栏目缩略图上传-->
+<script>
+  function upload()
+  {
+    var formData = new FormData();
+    formData.append('images', $('#previewImg')[0].files[0]);
+    //console.log(formData);
+    layer.msg('图片上传中', {icon: 16});
+    $.ajax({
+      type:"post",
+      processData: false,
+      contentType: false,
+      url:"xxx",
+      data:formData,
+      success:function(data){
+        if(data.status == 1){
+          console.log(data.image_name);
+          layer.closeAll('loading');
+          //layer.msg(data.info,{icon:1,time:1000});
+          $("#pimages").attr('src',data.image_name);
+          $("#avatar").val(data.image_name);
+          $(".imgs").show();
+          return false;
+        }else{
+          layer.msg(data.info,{icon:2,time:1000});
+        }
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

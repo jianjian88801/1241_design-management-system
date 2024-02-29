@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>
+    上传资料
+  </title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="stylesheet" href="../css/main.css" media="all">
+  <!--  <script type="text/javascript" src="../lib/loading/okLoading.js"></script>-->
+<!--  <link rel="stylesheet" href="../css/bootstrap.css">-->
+  <!--导入ElementUI样式列表，css样式一般都在页面头部-->
+  <link rel="stylesheet" href="../css/index.css">
+
+  <style>
+    .el-button--goon.is-active,
+    .el-button--goon:active {
+      background: #20B2AA;
+      border-color: #20B2AA;
+      color: #fff;
+    }
+
+    .el-button--goon:focus,
+    .el-button--goon:hover {
+      background: #48D1CC;
+      border-color: #48D1CC;
+      color: #fff;
+    }
+
+    .el-button--goon {
+      color: #FFF;
+      background-color: #20B2AA;
+      border-color: #20B2AA;
+    }
+
+
+
+  </style>
+
+</head>
+<body>
+<div id="app">
+  <div class="x-nav">
+            <span class="layui-breadcrumb">
+              <a><cite>首页</cite></a>
+              <a><cite>资料归档</cite></a>
+              <a><cite>上传资料</cite></a>
+            </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
+  </div>
+  <div class="x-body">
+    <table class="layui-table">
+      <thead>
+      <tr>
+        <th>
+          名称
+        </th>
+        <th>
+          文件
+        </th>
+        <th>
+          下载
+        </th>
+      </tr>
+      </thead>
+      <tbody id="x-img">
+      <tr >
+        <td>任务书（<b style="color:#ff0000">限700KB</b>）</td>
+        <td>
+<!--          <el-button >上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
+          <el-upload
+                  class="upload-demo"
+                  action="upload/file2?fileType=1"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  multiple
+                  :limit="1"
+                  :on-exceed="handleExceed"
+                  :file-list="jobfile">
+            <el-button>上传<i class="el-icon-upload el-icon--right"></i></el-button>
+
+          </el-upload>
+        </td>
+        <td>
+          <a round href="/Student/download?fileType=1" >
+            <el-button round>
+              下载<i class="el-icon-download el-icon--right"></i>
+            </el-button>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>开题报告（<b style="color:red">限300KB</b>）</td>
+        <td>
+          <!--          <el-button >上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
+          <el-upload
+                  class="upload-demo"
+                  action="upload/file2?fileType=2"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  multiple
+                  :limit="1"
+                  :on-exceed="handleExceed"
+                  :file-list="ktfile">
+            <el-button type="primary">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+
+          </el-upload>
+        </td>
+        <td>
+          <a round href="/Student/download?fileType=2" >
+            <el-button round type="primary">
+              下载<i class="el-icon-download el-icon--right"></i>
+            </el-button>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>中期检查（<b style="color:red">限300KB</b>）</td>
+        <td>
+          <!--          <el-button >上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
+          <el-upload
+                  class="upload-demo"
+                  action="upload/file2?fileType=2"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  multiple
+                  :limit="1"
+                  :on-exceed="handleExceed"
+                  :file-list="zqfile">
+            <el-button type="primary">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+
+          </el-upload>
+        </td>
+        <td>
+          <a round href="/Student/download?fileType=2" >
+            <el-button round type="primary">
+              下载<i class="el-icon-download el-icon--right"></i>
+            </el-button>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>文献综述（<b style="color:red">限300KB</b>）</td>
+        <td>
+          <!--          <el-button >上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
+          <el-upload
+                  class="upload-demo"
+                  action="upload/file2?fileType=3"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  multiple
+                  :limit="1"
+                  :on-exceed="handleExceed"
+                  :file-list="shufile">
+            <el-button type="success">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+
+          </el-upload>
+        </td>
+        <td>
+          <a round href="/Student/download?fileType=3" >
+            <el-button round type="success">
+              下载<i class="el-icon-download el-icon--right"></i>
+            </el-button>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>外文翻译（<b style="color:red">限700KB</b>）</td>
+        <td>
+          <!--          <el-button >上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
+          <el-upload
+                  class="upload-demo"
+                  action="upload/file2?fileType=4"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  multiple
+                  :limit="1"
+                  :on-exceed="handleExceed"
+                  :file-list="yifile">
+            <el-button type="info">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+
+          </el-upload>
+        </td>
+        <td>
+          <a round href="/Student/download?fileType=4" >
+            <el-button round type="info">
+              下载<i class="el-icon-download el-icon--right"></i>
+            </el-button>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>相关文件 （<b style="color:red">限1MB,请不要拍照贴图</b>）</td>
+        <td>
+          <!--          <el-button >上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
+          <el-upload
+                  class="upload-demo"
+                  action="upload/file2?fileType=5"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  multiple
+                  :limit="1"
+                  :on-exceed="handleExceed"
+                  :file-list="xgfile">
+            <el-button type="warning">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+
+          </el-upload>
+        </td>
+        <td>
+          <a round href="/Student/download?fileType=5" >
+            <el-button round type="warning">
+              下载<i class="el-icon-download el-icon--right"></i>
+            </el-button>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>查重报告 （<b style="color:red">限2MB</b>）</td>
+        <td>
+          <!--          <el-button >上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
+          <el-upload
+                  class="upload-demo"
+                  action="upload/file2?fileType=6"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  multiple
+                  :limit="1"
+                  :on-exceed="handleExceed"
+                  :file-list="chafile">
+            <el-button type="danger">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+
+          </el-upload>
+        </td>
+        <td>
+          <a round href="/Student/download?fileType=6" >
+            <el-button round type="danger">
+              下载<i class="el-icon-download el-icon--right"></i>
+            </el-button>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>毕业论文</td>
+        <td>
+          <!--          <el-button >上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
+          <el-upload
+                  class="upload-demo"
+                  action="upload/file2?fileType=7"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
+                  :before-remove="beforeRemove"
+                  multiple
+                  :limit="1"
+                  :on-exceed="handleExceed"
+                  :file-list="bsfile">
+            <el-button type="goon">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+
+          </el-upload>
+        </td>
+        <td>
+          <a round href="/Student/download?fileType=7" >
+            <el-button round type="goon">
+              下载<i class="el-icon-download el-icon--right"></i>
+            </el-button>
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="../lib/layui/layui.js" charset="utf-8"></script>
+<!--js脚本一般是放在页面尾部-->
+<!--Vue js脚本-->
+<script src="../js/vue.js" charset="utf-8"></script>
+<!--引入ElementUI组件库-->
+<script src="../js/index.js" charset="utf-8"></script>
+<!--引入Axios js脚本-->
+<script src="../js/axios.js" charset="utf-8"></script>
+<!--引入时间插件包Momentjs-->
+<script src="../js/moment.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+  var app = new Vue({
+    el:"#app",
+    data:{
+      title:"添加学生",
+      obj:{
+        name:'',
+        url:'',
+      },
+      SessionOptions:{},
+      // community:{id:"",stuDepartId:"",stuName:"",depart:{depId:""}},
+      community:{id:"",StuNumber:"", StuName:"", StuDepartId:"", ProNumber:"", StuClass:"", phoneNumber:"", campus:"", gender:"", session:"", state:""},
+      jobfile: [],
+      ktfile: [],
+      shufile: [],
+      yifile: [],
+      xgfile: [],
+      chafile: [],
+      bsfile: [],
+      zqfile:[],
+
+      communityList:[],
+      DepartOptions:[],
+      MajorOptions:[],
+      ClassOptions:[],
+      rules: {
+
+        name: [
+          { required: true, message: '请输入名字', trigger: 'blur' }
+        ],
+        depart: [
+          { required: true, message: '请选择系部', trigger: 'blur' }
+        ],
+        gender:[
+          { required: true, message: '请选择性别', trigger: 'change' }
+        ],
+        phoneNumber:[
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ],
+        session:[
+          { required: true, message: '请输入届数', trigger: 'blur' }
+        ],
+        campus:[
+          { required: true, message: '请输入校区', trigger: 'blur' }
+        ],
+      }
+    },
+    methods:{
+      getAllDeptToSelect(){
+        axios.get("/Manager/getAllDeptToSelect").then((res)=>{
+          this.DepartOptions = res.data.data;
+          console.log(this.DepartOptions);
+        });
+      },
+      search(){
+          axios.post("/Student/searchAllFileData").then((res)=>{
+              console.log(res.data.data);
+              if(res.data.data.jobfile != null){
+                this.jobfile.push(JSON.parse(JSON.stringify(this.obj)));
+                this.jobfile[0].name = res.data.data.jobfile;
+              }
+              if(res.data.data.shufile != null){
+                this.shufile.push(JSON.parse(JSON.stringify(this.obj)));
+                this.shufile[0].name = res.data.data.shufile;
+              }
+              if(res.data.data.ktfile != null){
+                this.ktfile.push(JSON.parse(JSON.stringify(this.obj)));
+                this.ktfile[0].name = res.data.data.ktfile;
+              }
+              if(res.data.data.bsfile != null){
+                this.bsfile.push(JSON.parse(JSON.stringify(this.obj)));
+                this.bsfile[0].name = res.data.data.bsfile;
+              }
+              if(res.data.data.yifile != null){
+                this.yifile.push(JSON.parse(JSON.stringify(this.obj)));
+                this.yifile[0].name = res.data.data.yifile;
+              }
+              if(res.data.data.chafile != null){
+                this.chafile.push(JSON.parse(JSON.stringify(this.obj)));
+                this.chafile[0].name = res.data.data.chafile;
+              }
+              if(res.data.data.xgfile != null){
+                this.xgfile.push(JSON.parse(JSON.stringify(this.obj)));
+                this.xgfile[0].name = res.data.data.xgfile;
+              }
+              if(res.data.data.zqfile != null){
+                this.zqfile.push(JSON.parse(JSON.stringify(this.obj)));
+                this.zqfile[0].name = res.data.data.zqfile;
+              }
+          });
+        },
+      getMajorsByDepartId(val){//根据系部id获取相应的专业
+        console.log(val);
+        if(val != null && val != '' && val != undefined){
+          axios.get("/Manager/getMajorsByDepId?id="+val)
+                  .then(res => {
+                    //给MajorOptions数组赋值
+                    this.MajorOptions = res.data.data;
+                    console.log(this.MajorOptions);
+                  })
+        }
+      },
+      getAClassByMajorId(val){//根据专业id获取相应的班级
+        console.log(val);
+        if(val != null && val != '' && val != undefined){
+          axios.get("/Manager/getAClassByMajorId?id="+val+"&session="+this.community.session)
+                  .then(res => {
+                    //给ClassOptions数组赋值
+                    this.ClassOptions = res.data.data;
+                    console.log(this.ClassOptions);
+                  })
+        }
+      },
+      findById(){
+        axios.get("/Manager/findStuById?id="+this.community.id).then((res)=>{
+          this.community = res.data.data;
+          this.getMajorsByDepartId(this.community.depart.depId);
+          this.getAClassByMajorId(this.community.proNumber);
+          console.log(this.community);
+        });
+      },
+      handleSuccess(response, file, fileList){
+        this.community.thumbnail=response.data;
+      },
+      // handleRemove() {
+      //   axios.get("/estate/delfile?fileName="+this.community.thumbnail).then((res)=>{
+      //     app.community.thumbnail="";
+      //     if(res.data.flag){
+      //       app.fileList=[];
+      //       this.$message({
+      //         message: '图片删除成功',
+      //         type: 'success'
+      //       });
+      //     }
+      //   });
+      // },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      //文件删除提示
+      beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
+      },
+      //表达重置
+      clearAll() {
+        this.$refs.communityFormRef.resetFields();
+        if(this.fileList.length>0) {
+          this.handleRemove();
+        }
+      },
+      save(){
+        var method = "";
+        if(this.community.id != null){
+          method = "update";
+          this.community.depart = null;
+          this.community.major = null;
+        }else{
+          method = "add"
+        }
+        axios.post("/Manager/"+method+"Student",this.community).then((res)=>{
+          if(res.data.flag){
+            this.$message({
+              message: res.data.message,
+              type: 'success'
+            });
+          }
+        });
+      },
+      imgUrl(){
+        return "http://localhost/estate"+app.community.thumbnail;
+      },
+      getQueryString(name){
+        let reg = `(^|&)${name}=([^&]*)(&|$)`
+        let r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+      }
+    },
+    created:function(){
+      layui.use(['element','layer','form'], function(){
+        $ = layui.jquery;//jquery
+        lement = layui.element();//面包导航
+        layer = layui.layer;//弹出层
+        form = layui.form();
+        okLoading.close($);
+      });
+      //获取父页面传递参数，小区ID
+      this.community.id = this.getQueryString("id");
+      //根据小区ID获取小区对象，进行数据回显
+      if(this.community.id != null && this.community.id != ''){
+        this.title="修改学生";
+        this.findById();
+        this.getAllDeptToSelect();
+      }
+      this.getAllDeptToSelect();
+      for (let i = 0; i <100; i++) {
+        this.SessionOptions[i] = 2001+i;
+      }
+      this.search();
+    }
+  });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>
+    编辑中期检查
+  </title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="stylesheet" href="../css/main.css" media="all">
+<!--    <script type="text/javascript" src="../lib/loading/okLoading.js"></script>-->
+<!--  <link rel="stylesheet" href="../css/bootstrap.css">-->
+  <!--导入ElementUI样式列表，css样式一般都在页面头部-->
+  <link rel="stylesheet" href="../css/index.css">
+  <!--百度编辑器-->
+  <script src="../ueditor/ueditor.config.js"></script>
+  <script src="../ueditor/ueditor.all.min.js"></script>
+  <script src="../ueditor/lang/zh-cn/zh-cn.js"></script>
+</head>
+<body>
+<div id="app">
+  <div class="x-nav">
+            <span class="layui-breadcrumb">
+              <a><cite>首页</cite></a>
+              <a><cite>资料归档</cite></a>
+              <a><cite>中期检查</cite></a>
+              <a></cite>编辑中期检查</cite></a>
+            </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
+  </div>
+  <div class="x-body">
+    <el-form ref="form" :model="form" label-width="80px">
+      <el-form-item label="1.毕业设计（论文）时间安排表" prop="contents">
+<!--        <el-input type="textarea" autosize v-model="form.contents"></el-input>-->
+        <textarea  id="content1" placeholder="" name="content"></textarea>
+      </el-form-item>
+
+      <el-form-item label="2.毕业设计（论文）完成情况:" prop="purpose">
+<!--        <el-input type="textarea" autosize v-model="form.purpose"></el-input>-->
+        <textarea  id="content2" placeholder="" name="content"></textarea>
+      </el-form-item>
+
+      <el-form-item label="3.阶段性成果：" prop="reference">
+<!--        <el-input type="textarea" autosize v-model="form.reference"></el-input>-->
+        <div class="layui-input-inline">
+          <textarea  id="content3" placeholder="" name="content"></textarea>
+        </div>
+      </el-form-item>
+
+      <el-form-item label="4.存在主要问题:" prop="reference">
+        <!--        <el-input type="textarea" autosize v-model="form.reference"></el-input>-->
+        <div class="layui-input-inline">
+          <textarea  id="content4" placeholder="" name="content"></textarea>
+        </div>
+      </el-form-item>
+
+      <el-form-item label="附件" >
+        <el-upload
+                class="upload-demo"
+                ref="upload"
+                action="upload/file2?fileType=8"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :file-list="zqfile"
+                :auto-upload="false">
+          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">保存</el-button>
+        <el-button>取消</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</div>
+<script src="../lib/layui/layui.js" charset="utf-8"></script>
+<!--js脚本一般是放在页面尾部-->
+<!--Vue js脚本-->
+<script src="../js/vue.js" charset="utf-8"></script>
+<!--引入ElementUI组件库-->
+<script src="../js/index.js" charset="utf-8"></script>
+<!--引入Axios js脚本-->
+<script src="../js/axios.js" charset="utf-8"></script>
+<!--引入时间插件包Momentjs-->
+<script src="../js/moment.min.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+  //实例化编辑器
+  //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+
+  UE.getEditor('content1',{initialFrameWidth:800,initialFrameHeight:440,});
+  UE.getEditor('content2',{initialFrameWidth:800,initialFrameHeight:440,});
+  UE.getEditor('content3',{initialFrameWidth:800,initialFrameHeight:440,});
+  UE.getEditor('content4',{initialFrameWidth:800,initialFrameHeight:440,});
+  UE.getEditor('content5',{initialFrameWidth:800,initialFrameHeight:440,});
+  UE.getEditor('content6',{initialFrameWidth:800,initialFrameHeight:440,});
+
+</script>
+
+<script type="text/javascript">
+  var app = new Vue({
+    el:"#app",
+    data:{
+        content:"",
+        obj:{
+            name:'',
+            url:'',
+        },
+      zqfile: [],
+      fileList: [],
+      form: {
+          time_schedule:'',
+          completion:'',
+          initial_achieve:'',
+          main_issues:'',
+      },
+      title:"添加学生",
+      SessionOptions:{},
+      // community:{id:"",stuDepartId:"",stuName:"",depart:{depId:""}},
+      community:{id:"",StuNumber:"", StuName:"", StuDepartId:"", ProNumber:"", StuClass:"", phoneNumber:"", campus:"", gender:"", session:"", state:""},
+    },
+    methods:{
+      submitUpload() {
+        this.$refs.upload.submit();
+      },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      onSubmit() {
+        console.log('submit!');
+          var arr = [];
+          arr.push(UE.getEditor('content1').getContent());
+          arr.push(UE.getEditor('content2').getContent());
+          arr.push(UE.getEditor('content3').getContent());
+          arr.push(UE.getEditor('content4').getContent());
+          this.form.time_schedule = UE.getEditor('content1').getContent();
+          this.form.completion = UE.getEditor('content2').getContent();
+          this.form.initial_achieve = UE.getEditor('content3').getContent();
+          this.form.main_issues = UE.getEditor('content4').getContent();
+          console.log(this.form);
+
+          axios.post("/Student/SaveMidTermExam",this.form).then((res)=>{
+              if(res.data.flag){
+                  this.$message({
+                      message: res.data.message,
+                      type: 'success'
+                  });
+              }else {
+                  this.$message({
+                      message: res.data.message,
+                      type: 'error  '
+                  });
+              }
+          });
+      },
+      //查询学生自己的中期检查  函数
+      findMidTermExamById(){
+        axios.get("/Student/findMidTermExamById").then((res)=>{
+          console.log(res.data.data);
+          if(res.data.data.file_location != null){
+              this.zqfile.push(JSON.parse(JSON.stringify(this.obj)));
+              this.zqfile[0].name = res.data.data.file_location;
+          }
+          this.form.reference = res.data.data.reference;
+          this.content = this.form.reference;
+
+          var ue = UE.getEditor('content1');
+          ue.addListener("ready", function () {
+            // editor准备好之后才可以使用
+            ue.setContent(res.data.data.time_schedule);
+          });
+
+          var ue2 = UE.getEditor('content2');
+          ue2.addListener("ready", function () {
+              // editor准备好之后才可以使用
+              ue2.setContent(res.data.data.completion);
+          });
+
+            var ue3 = UE.getEditor('content3');
+            ue3.addListener("ready", function () {
+                // editor准备好之后才可以使用
+                ue3.setContent(res.data.data.initial_achieve);
+            });
+            var ue4 = UE.getEditor('content4');
+            ue4.addListener("ready", function () {
+                // editor准备好之后才可以使用
+                ue4.setContent(res.data.data.main_issues);
+            });
+
+        });
+      },
+      getAllDeptToSelect(){
+        axios.get("/Student/getAllDeptToSelect").then((res)=>{
+          this.DepartOptions = res.data.data;
+          console.log(this.DepartOptions);
+        });
+      },
+      getMajorsByDepartId(val){//根据系部id获取相应的专业
+        console.log(val);
+        if(val != null && val != '' && val != undefined){
+          axios.get("/Student/getMajorsByDepId?id="+val)
+                  .then(res => {
+                    //给MajorOptions数组赋值
+                    this.MajorOptions = res.data.data;
+                    console.log(this.MajorOptions);
+                  })
+        }
+      },
+      getAClassByMajorId(val){//根据专业id获取相应的班级
+        console.log(val);
+        if(val != null && val != '' && val != undefined){
+          axios.get("/Student/getAClassByMajorId?id="+val+"&session="+this.community.session)
+                  .then(res => {
+                    //给ClassOptions数组赋值
+                    this.ClassOptions = res.data.data;
+                    console.log(this.ClassOptions);
+                  })
+        }
+      },
+      findById(){
+        axios.get("/Student/findMyInfo").then((res)=>{
+          this.community = res.data.data;
+          this.getMajorsByDepartId(this.community.depart.depId);
+          this.getAClassByMajorId(this.community.proNumber);
+          console.log(this.community);
+        });
+      },
+      handleSuccess(response, file, fileList){
+        this.community.thumbnail=response.data;
+      },
+      handleRemove() {
+        axios.get("/estate/delfile?fileName="+this.community.thumbnail).then((res)=>{
+          app.community.thumbnail="";
+          if(res.data.flag){
+            app.fileList=[];
+            this.$message({
+              message: '图片删除成功',
+              type: 'success'
+            });
+          }
+        });
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      //文件删除提示
+      beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
+      },
+      //表达重置
+      clearAll() {
+        this.$refs.communityFormRef.resetFields();
+        if(this.fileList.length>0) {
+          this.handleRemove();
+        }
+      },
+      save(){
+        var method = "";
+        if(this.community.id != null){
+          method = "update";
+          this.community.depart = null;
+          this.community.major = null;
+        }else{
+          method = "add"
+        }
+        axios.post("/Student/"+method+"Student",this.community).then((res)=>{
+          if(res.data.flag){
+            this.$message({
+              message: res.data.message,
+              type: 'success'
+            });
+          }
+        });
+      },
+      imgUrl(){
+        return "http://localhost/estate"+app.community.thumbnail;
+      },
+      getQueryString(name){
+        let reg = `(^|&)${name}=([^&]*)(&|$)`
+        let r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+      }
+    },
+    created:function(){
+      layui.use(['element','layer','form'], function(){
+        $ = layui.jquery;//jquery
+        lement = layui.element();//面包导航
+        layer = layui.layer;//弹出层
+        form = layui.form();
+        okLoading.close($);
+      });
+      this.findMidTermExamById();
+      this.search();
+      console.log("更新中期检查！");
+    }
+  });
+</script>
+</body>
+</html>

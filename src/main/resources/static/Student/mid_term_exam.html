@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>
+    中期检查
+  </title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="stylesheet" href="../css/main.css" media="all">
+<!--    <script type="text/javascript" src="../lib/loading/okLoading.js"></script>-->
+<!--  <link rel="stylesheet" href="../css/bootstrap.css">-->
+  <!--导入ElementUI样式列表，css样式一般都在页面头部-->
+  <link rel="stylesheet" href="../css/index.css">
+
+  <style>
+    .el-button--goon.is-active,
+    .el-button--goon:active {
+      background: #20B2AA;
+      border-color: #20B2AA;
+      color: #fff;
+    }
+
+    .el-button--goon:focus,
+    .el-button--goon:hover {
+      background: #48D1CC;
+      border-color: #48D1CC;
+      color: #fff;
+    }
+
+    .el-button--goon {
+      color: #FFF;
+      background-color: #20B2AA;
+      border-color: #20B2AA;
+    }
+
+
+
+  </style>
+
+</head>
+<body>
+<div id="app">
+  <div class="x-nav">
+            <span class="layui-breadcrumb">
+              <a><cite>首页</cite></a>
+              <a><cite>资料归档</cite></a>
+              <a><cite>中期检查</cite></a>
+            </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
+  </div>
+    <div style="height: 300px;position: absolute;left: 1300px;top: 100px" >
+        <el-steps direction="vertical" :active="mid_term_exam.progress" space='200'>
+            <el-step>
+                <template slot="description">
+                    <span>{{mid_term_exam.assignment_book.stu_name}}<br>{{mid_term_exam.time}}</span>
+                </template>
+            </el-step>
+            <el-step description="" style="width: 100px">
+                <template slot="description">
+                    <span>{{mid_term_exam.assignment_book.tea_name}}<br>{{mid_term_exam.remark}}</span>
+                </template>
+            </el-step>
+        </el-steps>
+    </div>
+  <div class="x-body" style="width: 1000px;height: 1800px;position: relative;left: 220px">
+<!--    <div>-->
+<!--      <el-steps :active="Opening_report.progress" align-center>-->
+<!--        <el-step title="学生" :description="Opening_report">-->
+<!--          <template slot="description">-->
+<!--            <span>{{Opening_report.stu_name}}<br>{{Opening_report.sub_time}}</span>-->
+<!--          </template>-->
+<!--        </el-step>-->
+<!--        <el-step title="指导老师" :description="Opening_report">-->
+<!--          <template slot="description">-->
+<!--            <span>{{Opening_report.tea_name}}<br>{{Opening_report.appraise}}</span>-->
+<!--          </template>-->
+<!--        </el-step>-->
+<!--      </el-steps>-->
+<!--    </div>-->
+    <el-descriptions class="margin-top" title="选题基本信息" :column="3" size="small" border>
+        <template slot="extra">
+            <a title="编辑中期检查" @click="AssBook_edit('编辑中期检查','edit_mid_term_exam.html',stu_id,'1000','1000')">
+                <el-button type="warning" size="small" :disabled="mid_term_exam.progress == 2">编辑</el-button>
+            </a>
+            <a title="下载中期检查" href="/Student/download?fileType=8">
+                <el-button type="warning" size="small" >下载中期检查</el-button>
+            </a>
+        </template>
+
+      <el-descriptions-item>
+        <template slot="label">
+          <i class="el-icon-s-opportunity"></i>
+          标题
+        </template>
+        {{mid_term_exam.assignment_book.title}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          外文标题
+        </template>
+        {{mid_term_exam.assignment_book.foreign_title}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          选题学生
+        </template>
+        {{mid_term_exam.assignment_book.stu_name}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+
+          课题所属部门
+        </template>
+        {{mid_term_exam.assignment_book.department}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          提交时间
+        </template>
+        {{mid_term_exam.sub_time}}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          审核时间
+        </template>
+        {{mid_term_exam.exam_time}}
+      </el-descriptions-item>
+    </el-descriptions>
+
+    <el-descriptions class="margin-top" title="中期检查详情" :column="3" :size="size" border style="margin: 10px">
+    </el-descriptions>
+    <font style="color: red;margin: 20px">1.毕业设计（论文）时间安排表：</font>
+    <br>
+    <div v-html="mid_term_exam.time_schedule"></div>
+    <br>
+    <font style="color: red;margin: 20px">2.毕业设计（论文）完成情况：</font>
+    <br>
+      <div v-html="mid_term_exam.completion"></div>
+    <br>
+    <font style="color: red;margin: 20px">3.阶段性成果：</font>
+    <br>
+      <div v-html="mid_term_exam.initial_achieve"></div>
+    <br>
+    <font style="color: red;margin: 20px">4.存在主要问题:</font>
+    <br>
+      <div v-html="mid_term_exam.main_issues"></div>
+    <br>
+
+<!--    <el-descriptions class="margin-top" title="附件" :column="3" :size="size" border style="margin-top: 10px">-->
+<!--    </el-descriptions>-->
+
+<!--    <el-link type="primary" href="/Student/download?fileType=1">{{Opening_report.file_location}}</el-link>-->
+  </div>
+</div>
+
+<script src="../lib/layui/layui.js" charset="utf-8"></script>
+<!--js脚本一般是放在页面尾部-->
+<!--Vue js脚本-->
+<script src="../js/vue.js" charset="utf-8"></script>
+<!--引入ElementUI组件库-->
+<script src="../js/index.js" charset="utf-8"></script>
+<!--引入Axios js脚本-->
+<script src="../js/axios.js" charset="utf-8"></script>
+<!--引入时间插件包Momentjs-->
+<script src="../js/moment.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+  var app = new Vue({
+    el:"#app",
+    data:{
+
+      SessionOptions:{},
+      stu_id:"", // 学生id
+      mid_term_exam:{
+          id:'',
+          stu_id:'',
+          tea_id:'',
+          time_schedule:'',
+          completion:'',
+          initial_achieve:'',
+          main_issues:'',
+          progress:'',
+          ass_book_id:'',
+          sub_time:'',
+          exam_time:'',
+          remark:'',
+          teacher:'',
+          student:'',
+          assignment_book:'',
+      },
+      jobfile: [{name: '', url: ''}],
+      ktfile: [{name: '', url: ''}],
+      shufile: [{name: '', url: ''}],
+      yifile: [{name: '', url: ''}],
+      xgfile: [{name: '', url: ''}],
+      chafile: [{name: '', url: ''}],
+      bsfile: [{name: '', url: ''}],
+
+      communityList:[],
+      DepartOptions:[],
+      MajorOptions:[],
+      ClassOptions:[],
+      rules: {
+
+        name: [
+          { required: true, message: '请输入名字', trigger: 'blur' }
+        ],
+        depart: [
+          { required: true, message: '请选择系部', trigger: 'blur' }
+        ],
+        gender:[
+          { required: true, message: '请选择性别', trigger: 'change' }
+        ],
+        phoneNumber:[
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ],
+        session:[
+          { required: true, message: '请输入届数', trigger: 'blur' }
+        ],
+        campus:[
+          { required: true, message: '请输入校区', trigger: 'blur' }
+        ],
+      }
+    },
+    methods:{
+      //查询学生自己的开题报告  函数
+      findMidTermExamById(){
+        axios.get("/Student/findMidTermExamById").then((res)=>{
+            this.stuNum = res.data.data.stu_id; //在页面存放学生学号参数
+            this.mid_term_exam.id = res.data.data.id;
+            this.mid_term_exam.stu_id = res.data.data.stu_id;
+            this.mid_term_exam.tea_id = res.data.data.tea_id;
+            this.mid_term_exam.time_schedule = res.data.data.time_schedule;
+            this.mid_term_exam.completion = res.data.data.completion;
+            this.mid_term_exam.initial_achieve = res.data.data.initial_achieve;
+            this.mid_term_exam.main_issues = res.data.data.main_issues;
+            this.mid_term_exam.progress = res.data.data.progress;
+            this.mid_term_exam.sub_time = res.data.data.sub_time;
+            this.mid_term_exam.exam_time = res.data.data.exam_time;
+            this.mid_term_exam.remark = res.data.data.remark;
+            this.mid_term_exam.ass_book_id = res.data.data.ass_book_id;
+            this.mid_term_exam.teacher = res.data.data.teacher;
+            this.mid_term_exam.student = res.data.data.student;
+            this.mid_term_exam.assignment_book = res.data.data.assignment_book;
+            console.log(this.mid_term_exam);
+        });
+      },
+      AssBook_edit(title,url,id,w,h){
+        url = url+"?id="+id;
+        this.x_admin_show(title,url,w,h);
+      },
+
+      x_admin_show(title,url,width,height){
+        if (title == null || title == '') {
+          title=false;
+        };
+        if (url == null || url == '') {
+          url="404.html";
+        };
+        if (width == null || width == '') {
+          width=800;
+        };
+        if (height == null || height == '') {
+          height=($(window).height() - 50);
+        };
+
+        layer.open({
+          type: 2,
+          area: [width+'px', height +'px'],
+          fix: false, //不固定
+          maxmin: true,
+          shadeClose: true,
+          shade:0.4,
+          title: title,
+          content: url,
+          cancel: function(index, layero){
+            //使用右上角x关闭弹窗层，回调方法，重新加载页面数据，让修改或者新增的数据立马显示在页面上
+            app.findMidTermExamById();
+          }
+        });
+      },
+      getAllDeptToSelect(){
+        axios.get("/Manager/getAllDeptToSelect").then((res)=>{
+          this.DepartOptions = res.data.data;
+          console.log(this.DepartOptions);
+        });
+      },
+      search(){
+          axios.post("/Student/searchAllFileData").then((res)=>{
+              // console.log(res.data.data);
+              this.stuNum = res.data.data.studentid; //在页面存放学生学号参数
+              this.jobfile[0].name = res.data.data.jobfile;
+              this.shufile[0].name = res.data.data.shufile;
+              this.ktfile[0].name = res.data.data.ktfile;
+              this.bsfile[0].name = res.data.data.bsfile;
+              this.yifile[0].name = res.data.data.yifile;
+              this.chafile[0].name = res.data.data.chafile;
+              this.xgfile[0].name = res.data.data.xgfile;
+          });
+        },
+      getMajorsByDepartId(val){//根据系部id获取相应的专业
+        console.log(val);
+        if(val != null && val != '' && val != undefined){
+          axios.get("/Manager/getMajorsByDepId?id="+val)
+                  .then(res => {
+                    //给MajorOptions数组赋值
+                    this.MajorOptions = res.data.data;
+                    console.log(this.MajorOptions);
+                  })
+        }
+      },
+      getAClassByMajorId(val){//根据专业id获取相应的班级
+        console.log(val);
+        if(val != null && val != '' && val != undefined){
+          axios.get("/Manager/getAClassByMajorId?id="+val+"&session="+this.community.session)
+                  .then(res => {
+                    //给ClassOptions数组赋值
+                    this.ClassOptions = res.data.data;
+                    console.log(this.ClassOptions);
+                  })
+        }
+      },
+      findById(){
+        axios.get("/Manager/findStuById?id="+this.community.id).then((res)=>{
+          this.community = res.data.data;
+          this.getMajorsByDepartId(this.community.depart.depId);
+          this.getAClassByMajorId(this.community.proNumber);
+          console.log(this.community);
+        });
+      },
+      handleSuccess(response, file, fileList){
+        this.community.thumbnail=response.data;
+      },
+      // handleRemove() {
+      //   axios.get("/estate/delfile?fileName="+this.community.thumbnail).then((res)=>{
+      //     app.community.thumbnail="";
+      //     if(res.data.flag){
+      //       app.fileList=[];
+      //       this.$message({
+      //         message: '图片删除成功',
+      //         type: 'success'
+      //       });
+      //     }
+      //   });
+      // },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      //文件删除提示
+      beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
+      },
+      //表达重置
+      clearAll() {
+        this.$refs.communityFormRef.resetFields();
+        if(this.fileList.length>0) {
+          this.handleRemove();
+        }
+      },
+      save(){
+        var method = "";
+        if(this.community.id != null){
+          method = "update";
+          this.community.depart = null;
+          this.community.major = null;
+        }else{
+          method = "add"
+        }
+        axios.post("/Manager/"+method+"Student",this.community).then((res)=>{
+          if(res.data.flag){
+            this.$message({
+              message: res.data.message,
+              type: 'success'
+            });
+          }
+        });
+      },
+      imgUrl(){
+        return "http://localhost/estate"+app.community.thumbnail;
+      },
+      getQueryString(name){
+        let reg = `(^|&)${name}=([^&]*)(&|$)`
+        let r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+      }
+    },
+    created:function(){
+      layui.use(['element','layer','form'], function(){
+        $ = layui.jquery;//jquery
+        lement = layui.element();//面包导航
+        layer = layui.layer;//弹出层
+        form = layui.form();
+        okLoading.close($);
+      });
+      this.search();
+      this.findMidTermExamById();
+    }
+  });
+</script>
+</body>
+
+</html>

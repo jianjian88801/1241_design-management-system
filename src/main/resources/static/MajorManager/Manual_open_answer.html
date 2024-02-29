@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>
+    编辑
+  </title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="stylesheet" href="../css/main.css" media="all">
+  <!--  <script type="text/javascript" src="../lib/loading/okLoading.js"></script>-->
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <!--导入ElementUI样式列表，css样式一般都在页面头部-->
+  <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+<div id="app">
+  <div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
+  </div>
+  <div class="x-body">
+    <el-form ref="form" :model="form" label-width="80px">
+      <el-form-item label="组别名称">
+        <el-input v-model="form.group_name"></el-input>
+      </el-form-item>
+      <el-form-item label="组长">
+        <el-select v-model="form.headman_id" placeholder="请选择活动区域">
+          <el-option
+                  v-for="item in form.teacherList"
+                  :key="item.teaId"
+                  :label="item.teaName"
+                  :value="item.teaId">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="参加教师">
+        <el-tabs type="border-card">
+          <el-tab-pane label="教师列表"></el-tab-pane>
+          <el-popover
+                  placement="right"
+                  width="700"
+                  trigger="click">
+            <el-table :data="UndistributedTeaList">
+              <el-table-column width="150" property="teaNo" label="教师编号"></el-table-column>
+              <el-table-column width="100" property="teaName" label="教师姓名"></el-table-column>
+              <el-table-column width="300" property="departName" label="所属学院"></el-table-column>
+              <el-table-column
+                      fixed="right"
+                      label="操作"
+                      width="120">
+                <template slot-scope="scope">
+                  <el-button
+                          @click="addTeaToOpenAnswerGroup(scope.row.teaId)"
+                          type="text"
+                          size="small">
+                    添加
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button slot="reference" type="danger" size="small" @click="getUndistributedTea()">添加教师</el-button>
+          </el-popover>
+          <el-table
+                  :data="form.teacherList"
+                  style="width: 100%"
+                  max-height="250">
+            <el-table-column
+                    fixed
+                    prop="teaNo"
+                    label="教师编号"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="teaName"
+                    label="姓名"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="departName"
+                    label="所属学院"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="phoneNumber"
+                    label="电话"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="jobTitle"
+                    label="职称"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    fixed="right"
+                    label="操作"
+                    width="120">
+              <template slot-scope="scope">
+                <el-button
+                        @click="deleteRowTea(scope.row.teaId)"
+                        type="text"
+                        size="small">
+                  移除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tabs>
+      </el-form-item>
+      <el-form-item label="参加学生">
+        <el-tabs type="border-card">
+          <el-tab-pane label="学生列表"></el-tab-pane>
+          <el-popover
+                  placement="right"
+                  width="700"
+                  trigger="click">
+            <el-table :data="UndistributedStuList">
+              <el-table-column width="150" property="stuNumber" label=学号></el-table-column>
+              <el-table-column width="100" property="stuName" label="学生姓名"></el-table-column>
+              <el-table-column width="200" property="guid_tea.teaName" label="指导教师"></el-table-column>
+              <el-table-column width="200" property="aClass.className" label="班级"></el-table-column>
+              <el-table-column
+                      fixed="right"
+                      label="操作"
+                      width="120">
+                <template slot-scope="scope">
+                  <el-button
+                          @click="addStuToOpenAnswerGroup(scope.row.id)"
+                          type="text"
+                          size="small">
+                    添加
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button slot="reference" type="danger" size="small" @click="getUndistributedStu()">添加学生</el-button>
+          </el-popover>
+          <el-table
+                  :data="form.studentList"
+                  style="width: 100%"
+                  max-height="250">
+            <el-table-column
+                    fixed
+                    prop="stuNumber"
+                    label="学号"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="stuName"
+                    label="姓名"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="major.majorName"
+                    label="专业"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="aClass.className"
+                    label="班级"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="email"
+                    label="邮箱"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    fixed="right"
+                    label="操作"
+                    width="120">
+              <template slot-scope="scope">
+                <el-button
+                        @click="deleteRowStu(scope.row.id)"
+                        type="text"
+                        size="small">
+                  移除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tabs>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">保存设置</el-button>
+        <el-button>取消</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</div>
+<script src="../lib/layui/layui.js" charset="utf-8"></script>
+<!--js脚本一般是放在页面尾部-->
+<!--Vue js脚本-->
+<script src="../js/vue.js" charset="utf-8"></script>
+<!--引入ElementUI组件库-->
+<script src="../js/index.js" charset="utf-8"></script>
+<!--引入Axios js脚本-->
+<script src="../js/axios.js" charset="utf-8"></script>
+<!--引入时间插件包Momentjs-->
+<script src="../js/moment.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+  var app = new Vue({
+    el:"#app",
+    data:{
+      title:"添加学生",
+      open_answer_id:'',
+      UndistributedTeaList:[],
+      UndistributedStuList:[],
+      form: {
+      },
+      SessionOptions:{},
+      // community:{id:"",stuDepartId:"",stuName:"",depart:{depId:""}},
+      community:{id:"",StuNumber:"", StuName:"", StuDepartId:"", ProNumber:"",email:"", StuClass:"", phoneNumber:"", campus:"", gender:"", session:"", state:""},
+      fileList:[],
+      DepartOptions:[],
+      MajorOptions:[],
+      ClassOptions:[],
+      rules: {
+
+        // name: [
+        //   { required: true, message: '请输入名字', trigger: 'change' }
+        // ],
+        depart: [
+          { required: true, message: '请选择系部', trigger: 'blur' }
+        ],
+        gender:[
+          { required: true, message: '请选择性别', trigger: 'change' }
+        ],
+        phoneNumber:[
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ],
+        session:[
+          { required: true, message: '请输入届数', trigger: 'blur' }
+        ],
+        campus:[
+          { required: true, message: '请输入校区', trigger: 'blur' }
+        ],
+      }
+    },
+    methods:{
+      onSubmit(){
+        console.log(this.form);
+        axios.post("/MajorManager/SaveOpenAnswer?id="+this.open_answer_id,this.form).then((res)=>{
+          if(res.data.flag){
+            this.$message({
+              message: res.data.message,
+              type: 'success'
+            });
+          }else{
+            this.$message({
+              message: res.data.message,
+              type: 'error'
+            });
+          }
+        });
+      },
+      addTeaToOpenAnswerGroup(id){
+        this.$confirm('请问您是否要添加该教师进入该答辩组吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //执行删除操作
+          axios.post("/MajorManager/addTeaToOpenAnswerGroup?id="+id+"&open_answer_id="+this.open_answer_id).then((res)=>{
+            if(res.data.flag){
+              this.$message({
+                type: 'success',
+                message: '添加成功!'
+              });
+            }
+            this.findOpenAnswerById();
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消添加'
+          });
+        });
+        console.log("添加教师进组教师Id:"+id);
+      },
+      addStuToOpenAnswerGroup(id){
+        this.$confirm('请问您是否要添加该学生进入该答辩组吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //执行删除操作
+          axios.post("/MajorManager/addStuToOpenAnswerGroup?id="+id+"&open_answer_id="+this.open_answer_id).then((res)=>{
+            if(res.data.flag){
+              this.$message({
+                type: 'success',
+                message: '添加成功!'
+              });
+            }
+            this.findOpenAnswerById();
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消添加'
+          });
+        });
+        console.log("添加学生进组学生Id:"+id);
+      },
+      getUndistributedTea(){
+        console.log("获取未被分配 该专业的教师列表");
+        axios.get("/MajorManager/getUndistributedTea").then((res)=>{
+          this.UndistributedTeaList = res.data.data;
+          console.log(this.UndistributedTeaList);
+        });
+      },
+      getUndistributedStu(){
+        console.log("获取未被分配 该专业的学生列表");
+        axios.get("/MajorManager/getUndistributedStu").then((res)=>{
+          this.UndistributedStuList = res.data.data;
+          console.log(this.UndistributedStuList);
+        });
+      },
+      deleteRowTea(id) {
+        this.$confirm('请问您是否要将该教师从该组删除?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //执行删除操作
+          axios.post("/MajorManager/delOpenAnswerTeaById?id="+id).then((res)=>{
+            if(res.data.flag){
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+            }
+            this.findOpenAnswerById();
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+        console.log("需要删除的教师Id:"+id);
+      },
+      deleteRowStu(id) {
+        this.$confirm('请问您是否要将该学生从该组删除?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          //执行删除操作
+          axios.post("/MajorManager/delOpenAnswerStuById?id="+id).then((res)=>{
+            if(res.data.flag){
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+            }
+            this.findOpenAnswerById();
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+        console.log("需要删除的学生Id:"+id);
+      },
+      getAllDeptToSelect(){
+        axios.get("/Manager/getAllDeptToSelect").then((res)=>{
+          this.DepartOptions = res.data.data;
+          console.log(this.DepartOptions);
+        });
+      },
+      getMajorsByDepartId(val){//根据系部id获取相应的专业
+        console.log(val);
+        if(val != null && val != '' && val != undefined){
+          axios.get("/Manager/getMajorsByDepId?id="+val)
+                  .then(res => {
+                    //给MajorOptions数组赋值
+                    this.MajorOptions = res.data.data;
+                    console.log(this.MajorOptions);
+                  })
+        }
+      },
+      getAClassByMajorId(val){//根据专业id获取相应的班级
+        console.log(val);
+        if(val != null && val != '' && val != undefined){
+          axios.get("/Manager/getAClassByMajorId?id="+val+"&session="+this.community.session)
+                  .then(res => {
+                    //给ClassOptions数组赋值
+                    this.ClassOptions = res.data.data;
+                    console.log(this.ClassOptions);
+                  })
+        }
+      },
+      findOpenAnswerById(){
+        axios.get("/MajorManager/findOpenAnswerById?id="+this.open_answer_id).then((res)=>{
+          this.form = res.data.data;
+          console.log(res.data.data);
+        });
+      },
+      handleSuccess(response, file, fileList){
+        this.community.thumbnail=response.data;
+      },
+      handleRemove() {
+        axios.get("/estate/delfile?fileName="+this.community.thumbnail).then((res)=>{
+          app.community.thumbnail="";
+          if(res.data.flag){
+            app.fileList=[];
+            this.$message({
+              message: '图片删除成功',
+              type: 'success'
+            });
+          }
+        });
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      //文件删除提示
+      beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
+      },
+      //表达重置
+      clearAll() {
+        this.$refs.communityFormRef.resetFields();
+        if(this.fileList.length>0) {
+          this.handleRemove();
+        }
+      },
+      save(){
+        var method = "";
+        if(this.community.id != null){
+          method = "update";
+          this.community.depart = null;
+          this.community.major = null;
+        }else{
+          method = "add"
+        }
+        axios.post("/Manager/"+method+"Student",this.community).then((res)=>{
+          if(res.data.flag){
+            this.$message({
+              message: res.data.message,
+              type: 'success'
+            });
+          }
+        });
+      },
+      imgUrl(){
+        return "http://localhost/estate"+app.community.thumbnail;
+      },
+      getQueryString(name){
+        let reg = `(^|&)${name}=([^&]*)(&|$)`
+        let r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+      }
+    },
+    created:function(){
+      layui.use(['element','layer','form'], function(){
+        $ = layui.jquery;//jquery
+        lement = layui.element();//面包导航
+        layer = layui.layer;//弹出层
+        form = layui.form();
+        okLoading.close($);
+      });
+      //获取父页面传递参数，小区ID
+      this.open_answer_id = this.getQueryString("id");
+      this.findOpenAnswerById();
+    }
+  });
+</script>
+</body>
+</html>

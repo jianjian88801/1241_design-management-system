@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>
+    添加教师
+  </title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="stylesheet" href="../css/main.css" media="all">
+  <!--  <script type="text/javascript" src="../lib/loading/okLoading.js"></script>-->
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <!--导入ElementUI样式列表，css样式一般都在页面头部-->
+  <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+<div id="app">
+  <div class="x-nav">
+            <span class="layui-breadcrumb">
+              <a><cite>首页</cite></a>
+              <a><cite>教师管理</cite></a>
+              <a><cite>{{title}}</cite></a>
+            </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
+  </div>
+  <div class="x-body">
+    <el-form :model="community" :rules="rules" ref="communityFormRef" label-width="120px" class="demo-ruleForm">
+      <el-form-item label="工号" prop="stuNum">
+        <el-col :span="8">
+          <el-input  v-model="community.teaNo"></el-input>
+        </el-col>
+      </el-form-item>
+
+      <el-form-item label="姓名" prop="name">
+        <el-col :span="8">
+          <el-input  v-model="community.teaName"></el-input>
+        </el-col>
+      </el-form-item>
+
+      <el-form-item label="性别" prop="gender">
+        <el-radio-group v-model="community.gender">
+          <el-radio :label="0">女</el-radio>
+          <el-radio :label="1">男</el-radio>
+        </el-radio-group>
+      </el-form-item>
+
+      <el-form-item label="系部" prop="depart">
+        <el-select v-model="community.departId" clearable @change="getMajorsByDepartId($event)"  @clear="community.majors = []" placeholder="请选择系部">
+          <el-option
+                  v-for="item in DepartOptions"
+                  :key="item.depId"
+                  :label="item.depName"
+                  :value="item.depId">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="指导专业">
+        <div
+                class="check-group"
+                v-for="(item, index) in equipments"
+                :key="index">
+<!--          <el-tag>{{item.menu}}</el-tag>-->
+          <el-checkbox-group
+                  v-model="community.majors"
+                  >
+<!--            {{checkedEquipments}}-->
+            <el-checkbox
+                    v-for="data in item.childMenu"
+                    :label="data.majorId"
+                    :key="data.majorId">
+              {{data.majorName}}
+            </el-checkbox>
+          </el-checkbox-group>
+        </div>
+      </el-form-item>
+
+      <el-form-item label="电话" prop="phoneNumber">
+        <el-col :span="8">
+          <el-input  v-model="community.phoneNumber"></el-input>
+        </el-col>
+      </el-form-item>
+
+      <el-form-item label="学位" prop="major">
+        <el-select v-model="community.xueWei" clearable placeholder="请选择学位">
+          <el-option
+                  v-for="item in xueWei"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="职称" prop="major">
+        <el-select v-model="community.jobTitle" clearable placeholder="请选择职称">
+          <el-option
+                  v-for="item in jobTitle"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="save()" style="text-align: center">保存</el-button>
+        <el-button @click="clearAll()" style="text-align: center">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</div>
+<script src="../lib/layui/layui.js" charset="utf-8"></script>
+<!--js脚本一般是放在页面尾部-->
+<!--Vue js脚本-->
+<script src="../js/vue.js" charset="utf-8"></script>
+<!--引入ElementUI组件库-->
+<script src="../js/index.js" charset="utf-8"></script>
+<!--引入Axios js脚本-->
+<script src="../js/axios.js" charset="utf-8"></script>
+<!--引入时间插件包Momentjs-->
+<script src="../js/moment.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+  var app = new Vue({
+    el:"#app",
+    data:{
+      title:"添加教师",
+      SessionOptions:{},
+      // community:{id:"",stuDepartId:"",stuName:"",depart:{depId:""}},
+      community:{id:"",teaNo:"", teaName:"",majors: [], departId:"", phoneNumber:"",  gender:"",xueWei:""},
+      fileList:[],
+      DepartOptions:[],
+      MajorOptions:[],
+      ClassOptions:[],
+      xueWei:[{
+        value: '学士',
+        label: '学士'
+      }, {
+        value: '硕士',
+        label: '硕士'
+      }, {
+        value: '博士',
+        label: '博士'
+      }, {
+        value: '其他',
+        label: '其他'
+      }],
+
+      jobTitle:[{
+        value: '助教',
+        label: '助教'
+      }, {
+        value: '讲师',
+        label: '讲师'
+      }, {
+        value: '副教授',
+        label: '副教授'
+      }, {
+        value: '教授',
+        label: '教授'
+      },{
+        value: '其他',
+        label: '其他'
+      }],
+      checkedEquipments: [], //随意修改后的checked项（即要传到后台的变更数据）
+      equipments: [   // 所有数据
+        {
+          id: '1',
+          menu: '设备1',
+          childMenu: [],
+        },
+      ],
+
+      checkEquip: [  //模拟后台获取的数据（各el-checkbox-group默认checked项）
+        {
+          id: '1',
+          menu: '设备1',
+          childMenu: [
+          ]
+        }
+      ],
+
+      rules: {
+
+        name: [
+          { required: true, message: '请输入名字', trigger: 'blur' }
+        ],
+        major:[
+          { required: true, message: '请输入专业', trigger: 'blur' }
+        ],
+        depart: [
+          { required: true, message: '请选择系部', trigger: 'blur' }
+        ],
+        gender:[
+          { required: true, message: '请选择性别', trigger: 'change' }
+        ],
+        phoneNumber:[
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ],
+        session:[
+          { required: true, message: '请输入届数', trigger: 'blur' }
+        ],
+        campus:[
+          { required: true, message: '请输入校区', trigger: 'blur' }
+        ],
+      }
+    },
+    methods:{
+      // handleChange () {
+      //   console.log("this.checkedEquipments")
+      //   console.log(this.checkedEquipments)
+      //   this.community.majors = this.checkedEquipments
+      // },
+
+      getAllDeptToSelect(){
+        axios.get("/Manager/getAllDeptToSelect").then((res)=>{
+          this.DepartOptions = res.data.data;
+          // console.log(this.DepartOptions);
+        });
+      },
+      getMajorsByDepartId(val){//根据系部id获取相应的专业
+        // this.checkedEquipments = [];
+
+        // this.community.majors = []
+
+        console.log(val);
+        if(val != null && val != '' && val != undefined){
+          axios.get("/Manager/getMajorsByDepId?id="+val)
+                  .then(res => {
+                    //给MajorOptions数组赋值
+                    this.MajorOptions = res.data.data;
+                    this.equipments[0].childMenu = this.MajorOptions;
+                    // console.log(this.equipments);
+                    // console.log(this.MajorOptions);
+                  })
+        }
+      },
+      getAClassByMajorId(val){//根据专业id获取相应的班级
+        // console.log(val);
+        if(val != null && val != '' && val != undefined){
+          axios.get("/Manager/getAClassByMajorId?id="+val+"&session="+this.community.session)
+                  .then(res => {
+                    //给ClassOptions数组赋值
+                    this.ClassOptions = res.data.data;
+                    console.log(this.ClassOptions);
+                  })
+        }
+      },
+
+      findById(){
+        axios.get("/Manager/findTeaById?id="+this.community.id).then((res)=>{
+          this.community = res.data.data;
+          // for (let i = 0; i <this.community.majors.length; i++) {
+          //   this.checkedEquipments.push(this.community.majors[i])
+          // }
+
+          this.checkedEquipments = this.community.majors;
+          console.log(this.checkedEquipments)
+
+          this.getMajorsByDepartId(this.community.depart.depId);
+          // this.getAClassByMajorId(this.community.proNumber);
+          console.log(this.community);
+        });
+      },
+
+      handleSuccess(response, file, fileList){
+        this.community.thumbnail=response.data;
+      },
+      handleRemove() {
+        axios.get("/estate/delfile?fileName="+this.community.thumbnail).then((res)=>{
+          app.community.thumbnail="";
+          if(res.data.flag){
+            app.fileList=[];
+            this.$message({
+              message: '图片删除成功',
+              type: 'success'
+            });
+          }
+        });
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      //文件删除提示
+      beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
+      },
+      //表达重置
+      clearAll() {
+        this.$refs.communityFormRef.resetFields();
+        if(this.fileList.length>0) {
+          this.handleRemove();
+        }
+      },
+      save(){
+        var method = "";
+        if(this.community.teaId != null){
+          method = "update";
+        }else{
+          method = "add"
+        }
+        axios.post("/Manager/"+method+"Teacher",this.community).then((res)=>{
+          if(res.data.flag){
+            this.$message({
+              message: res.data.message,
+              type: 'success'
+            });
+          }
+        });
+        console.log(this.community);
+      },
+      imgUrl(){
+        return "http://localhost/estate"+app.community.thumbnail;
+      },
+      getQueryString(name){
+        let reg = `(^|&)${name}=([^&]*)(&|$)`
+        let r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+      }
+    },
+    created:function(){
+      layui.use(['element','layer','form'], function(){
+        $ = layui.jquery;//jquery
+        lement = layui.element();//面包导航
+        layer = layui.layer;//弹出层
+        form = layui.form();
+        okLoading.close($);
+      });
+      //获取父页面传递参数，小区ID
+      this.community.id = this.getQueryString("id");
+      console.log("从父页面获取的id:"+this.community.id);
+      //根据小区ID获取小区对象，进行数据回显
+      if(this.community.id != null && this.community.id != ''){
+        this.title="修改教师";
+        this.findById();
+        this.getAllDeptToSelect();
+      }
+      this.getAllDeptToSelect();
+      for (let i = 0; i <100; i++) {
+        this.SessionOptions[i] = 2001+i;
+      }
+    }
+  });
+</script>
+</body>
+</html>
